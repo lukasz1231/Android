@@ -11,12 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
+import androidx.appcompat.app.AppCompatActivity
 import com.example.zadanie3.ui.theme.Zadanie3Theme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+/*        enableEdgeToEdge()
         setContent {
             Zadanie3Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -26,10 +30,23 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }*/
+
+        val fragmentManager = supportFragmentManager
+        var fragment = fragmentManager.findFragmentById(R.id.fragment_container)
+
+        if (fragment == null) {
+            fragment = TaskFragment()
+
+            fragmentManager.commit {
+                add(R.id.fragment_container, fragment)
+            }
         }
+
     }
 }
 
+/*
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
@@ -44,4 +61,4 @@ fun GreetingPreview() {
     Zadanie3Theme {
         Greeting("Android")
     }
-}
+}*/
