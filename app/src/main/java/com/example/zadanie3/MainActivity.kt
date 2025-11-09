@@ -14,9 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.zadanie3.ui.theme.Zadanie3Theme
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : SingleFragmentActivity() {
+    override fun createFragment(): Fragment {
+        return TaskFragment()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,7 +36,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }*/
-
         val fragmentManager = supportFragmentManager
         var fragment = fragmentManager.findFragmentById(R.id.fragment_container)
 
