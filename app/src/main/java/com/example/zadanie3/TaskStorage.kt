@@ -7,7 +7,7 @@ object TaskStorage {
 
     init {
        val taskCount = 150
-        for (i in 1..taskCount) {
+        for (i in 1 until taskCount) {
             val task = Task(
                 name = "Pilne zadanie numer $i",
                 isDone = i % 3 == 0
