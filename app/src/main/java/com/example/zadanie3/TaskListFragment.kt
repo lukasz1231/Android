@@ -1,94 +1,98 @@
-// TaskListFragment.kt
+// TaskFragment.kt
 
 package com.example.zadanie3
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.zadanie3.models.Task
-import todoapp.databinding.FragmentTaskListBinding
-import databinding.ListItemTaskBinding
+import databinding.FragmentTaskBinding
 import java.util.UUID
 
-class TaskListFragment : Fragment() {
+class TaskFragment : Fragment() {
 
-    private var _binding: FragmentTaskListBinding? = null
+    private lateinit var task: Task
+    private lateinit var nameField: EditText
+    private lateinit var dateButton: Button
+    private lateinit var doneCheckBox: CheckBox
+
+    private var _binding: FragmentTaskBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
-    private lateinit var recyclerView: RecyclerView
-    private var adapter: TaskAdapter? = null
+    companion object {
+        private const val ARG_TASK_ID = "task_id"
+
+        fun newInstance(taskId: UUID): TaskFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_TASK_ID, taskId)
+            }
+            return TaskFragment().apply {
+                arguments = args
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+         val taskId = arguments?.getSerializable(ARG_TASK_ID) as? UUID
+            ?: throw IllegalStateException("TaskFragment must be supplied with a Task ID.")
+
+         task = TaskStorage.getTask(taskId)
+            ?: throw IllegalStateException("Task with ID $taskId not found.")
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTaskListBinding.inflate(inflater, container, false)
+        // Używamy ViewBinding, zakładając, że layout to fragment_task.xml
+        _binding = FragmentTaskBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        recyclerView = binding.taskRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        // Powiązanie widoków
+        nameField = binding.taskName
+        dateButton = binding.taskDate
+        doneCheckBox = binding.taskDone
 
-        updateView()
-        return view
-    }
+        // Ustawienie początkowych wartości pól na podstawie załadowanego zadania
+        nameField.setText(task.name)
+        dateButton.text = task.date.toString()
+        dateButton.isEnabled = false // Zgodnie z zadaniem
+        doneCheckBox.isChecked = task.isDone
 
-    override fun onResume() {
-        super.onResume()
-        updateView()     }
+        // Obsługa zmiany nazwy (jak w oryginalnym zadaniu)
+        nameField.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    private fun updateView() {
-        val taskStorage = TaskStorage
-        val tasks = taskStorage.getTasks()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                task.name = s.toString() // Aktualizacja modelu
+            }
 
-        if (adapter == null) {
-            adapter = TaskAdapter(tasks)
-            recyclerView.adapter = adapter
-        } else {
-            adapter!!.tasks = tasks
-            adapter!!.notifyDataSetChanged()
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Obsługa CheckBox (jak w oryginalnym zadaniu)
+        doneCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            task.isDone = isChecked // Aktualizacja modelu
         }
+
+        return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private inner class TaskHolder(
-        private val itemBinding: ListItemTaskBinding
-    ) : RecyclerView.ViewHolder(itemBinding.root) {
-
-        private lateinit var task: Task
-
-        fun bind(task: Task) {
-            this.task = task
-            itemBinding.taskItemName.text = task.name
-            itemBinding.taskItemDate.text = task.date.toString()
-        }
-    }
-
-    private inner class TaskAdapter(
-        var tasks: List<Task>
-    ) : RecyclerView.Adapter<TaskHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val itemBinding = ListItemTaskBinding.inflate(inflater, parent, false)
-            return TaskHolder(itemBinding)
-        }
-
-        override fun onBindViewHolder(holder: TaskHolder, position: Int) {
-            val task = tasks[position]
-            holder.bind(task)
-        }
-
-        override fun getItemCount() = tasks.size
     }
 }
