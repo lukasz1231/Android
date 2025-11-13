@@ -90,7 +90,22 @@ class TaskFragment : Fragment() {
 
         return view
     }
+    fun bind(task: Task) {
+        this.task = task
+        itemBinding.taskItemName.text = task.name
+        itemBinding.taskItemDate.text = task.date.toString()
 
+        // Opcjonalne: Wizualizacja statusu wykonania (lepszy feedback)
+        if (task.isDone) {
+            // Ustawienie flagi tekstowej, aby tekst był przekreślony
+            itemBinding.taskItemName.paintFlags =
+                itemBinding.taskItemName.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            // Usunięcie flagi przekreślenia
+            itemBinding.taskItemName.paintFlags =
+                itemBinding.taskItemName.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
