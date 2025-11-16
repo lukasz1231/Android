@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
+    android:layout_margin="@dimen/margin_default"
     android:orientation="vertical">
 
     <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
+        style="@style/SeparatorTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/name_label" />
@@ -19,16 +19,29 @@
         android:inputType="text" />
 
     <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
+        style="@style/SeparatorTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/details_label" />
 
-    <Button
+    <Spinner
+        android:id="@+id/task_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_default"
+        android:paddingBottom="@dimen/padding_default"/>
+
+    <EditText
         android:id="@+id/task_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/data_utworzenia"/>
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:autofillHints="date"
+        android:inputType="none"
+        android:hint="@string/data_utworzenia"/>
 
     <CheckBox
         android:id="@+id/task_done"

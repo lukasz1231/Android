@@ -6,4 +6,9 @@
     <string name="done_label">Wykonane</string>
     <string name="nazwa_zadania">Nazwa Zadania</string>
     <string name="data_utworzenia">Data Utworzenia</string>
+    <string name="task_add_new">Nowe zadanie</string>
+    <string name="show_subtitle">Pokaż podtytuł</string>
+    <string name="hide_subtitle">Ukryj podtytuł</string>
+    <string name="subtitle_format">%1$d zadań</string>
+    <string name="task_icon_placeholder">Ikona zadania</string>
 </resources>
